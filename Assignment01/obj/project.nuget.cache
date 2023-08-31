@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "HdhNe7z5bS4ZMxjJPFbdWZ1AG/3dd5W7n1AHHOtF5OFXfWiSt39MqodEMZsRhvjprwmEthDe11Oppaa5FvXmcw==",
+  "dgSpecHash": "QGtvKztr2tSENJceeazvRSMuH1bXvkHBLEOaxYgNl59DrRMDCKJBvK5+Au4bRo9YVcZclX59AJ93H6BzpCz3ew==",
   "success": true,
-  "projectFilePath": "/home/mons/ITU/ProgrammerSomData/Assignments/Assignment01/Assignment01.fsproj",
+  "projectFilePath": "/Users/frederikmoller/source/repos/PSDAssignments/Assignment01/Assignment01.fsproj",
   "expectedPackageFiles": [
-    "/home/mons/.nuget/packages/fsharp.core/7.0.400/fsharp.core.7.0.400.nupkg.sha512"
+    "/Users/frederikmoller/.nuget/packages/fsharp.core/7.0.400/fsharp.core.7.0.400.nupkg.sha512"
   ],
   "logs": []
 }

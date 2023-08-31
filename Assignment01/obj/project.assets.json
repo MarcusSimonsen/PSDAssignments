@@ -108,25 +108,25 @@
     ]
   },
   "packageFolders": {
-    "/home/mons/.nuget/packages/": {}
+    "/Users/frederikmoller/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/mons/ITU/ProgrammerSomData/Assignments/Assignment01/Assignment01.fsproj",
+      "projectUniqueName": "/Users/frederikmoller/source/repos/PSDAssignments/Assignment01/Assignment01.fsproj",
       "projectName": "Assignment01",
-      "projectPath": "/home/mons/ITU/ProgrammerSomData/Assignments/Assignment01/Assignment01.fsproj",
-      "packagesPath": "/home/mons/.nuget/packages/",
-      "outputPath": "/home/mons/ITU/ProgrammerSomData/Assignments/Assignment01/obj/",
+      "projectPath": "/Users/frederikmoller/source/repos/PSDAssignments/Assignment01/Assignment01.fsproj",
+      "packagesPath": "/Users/frederikmoller/.nuget/packages/",
+      "outputPath": "/Users/frederikmoller/source/repos/PSDAssignments/Assignment01/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/mons/.nuget/NuGet/NuGet.Config"
+        "/Users/frederikmoller/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "/usr/share/dotnet/sdk/7.0.400/FSharp/library-packs": {},
+        "/usr/local/share/dotnet/sdk/7.0.400/FSharp/library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -163,7 +163,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.400/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.400/RuntimeIdentifierGraph.json"
       }
     }
   }
