@@ -113,6 +113,31 @@ printInt eEq3v
 
 printInt eIf1v
 
+type aexpr =
+    | CstI of int
+    | Var of string
+    | Add of aexpr * aexpr
+    | Mul of aexpr * aexpr
+    | Sub of aexpr * aexpr
+
+let aexpr1 = Sub(Var "v", Add(Var "w", Var "z"))
+let aexpr2 = Mul(CstI 2, Sub(Var "v", Add(Var "w", Var "z")))
+let aexpr3 = Add(Add(Add(Var "x", Var "y"), Var "z"), Var "v")
+
+let rec fmt : aexpr -> string = function
+    | CstI i -> sprintf "%d" i
+    | Var x -> x
+    | Add(e1, e2) -> sprintf "(%s + %s)" (fmt e1) (fmt e2)
+    | Mul(e1, e2) -> sprintf "(%s * %s)" (fmt e1) (fmt e2)
+    | Sub(e1, e2) -> sprintf "(%s - %s)" (fmt e1) (fmt e2)
+
+let aexpr1s = fmt aexpr1
+let aexpr2s = fmt aexpr2
+let aexpr3s = fmt aexpr3
+
+printfn "%s" aexpr1s
+printfn "%s" aexpr2s
+printfn "%s" aexpr3s
 
 
 
