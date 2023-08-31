@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "HdhNe7z5bS4ZMxjJPFbdWZ1AG/3dd5W7n1AHHOtF5OFXfWiSt39MqodEMZsRhvjprwmEthDe11Oppaa5FvXmcw==",
+  "success": true,
+  "projectFilePath": "/home/mons/ITU/ProgrammerSomData/Assignments/Assignment01/Assignment01.fsproj",
+  "expectedPackageFiles": [
+    "/home/mons/.nuget/packages/fsharp.core/7.0.400/fsharp.core.7.0.400.nupkg.sha512"
+  ],
+  "logs": []
+}
