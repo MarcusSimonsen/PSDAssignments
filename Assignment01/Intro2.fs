@@ -147,6 +147,8 @@ let rec simplify: aexpr -> aexpr = function
         let e2v = simplify e2
         match e1v, e2v with
         | CstI x, CstI y when x = 0 || y = 0 -> CstI (x ||| y)
+        | CstI x, CstI y -> CstI (x + y)
+        | Var x, CstI 0 | CstI 0, Var x -> Var x
         | _ -> Add(e1v, e2v)
     | Sub(e1, e2) ->
         let e1v = simplify e1
@@ -154,41 +156,65 @@ let rec simplify: aexpr -> aexpr = function
         match e1v, e2v with
         | _, CstI 0 -> e1v
         | CstI x, CstI y when x = y -> CstI 0
+        | CstI x, CstI y -> CstI (x - y)
         | _ -> Sub(e1v, e2v)
     | Mul(e1, e2) -> 
         let e1v = simplify e1
         let e2v = simplify e2
         match e1v, e2v with
         | CstI x, CstI y when x = 0 || y = 0 -> CstI 0
+        | Var x, CstI 0 | CstI 0, Var x -> CstI 0
         | CstI x, CstI y when x = 1 -> CstI y
         | CstI x, CstI y when y = 1 -> CstI x
+        | Var x, CstI 1 | CstI 1, Var x -> Var x
+        | CstI x, CstI y -> CstI (x * y)
         | _ -> Mul(e1v, e2v)
 
 let aexprTest1 = Add(CstI 1, Mul(CstI 2, CstI 0))
 let aexprTest2= Sub(CstI 4, Sub(CstI 23, CstI 23))
+let aexprTest3 = Mul(Add(CstI 1, CstI 0),Add(Var "x", CstI 0))
 
 let aexprTest1s = simplify aexprTest1
 let aexprTest2s = simplify aexprTest2
+let aexprTest3s = simplify aexprTest3
 
 printfn "%A" aexprTest1s
 
 printfn "%A" aexprTest2s
 
+printfn "%A" aexprTest3s
 
-//TODO: Lav exercise 1.2 V
+let rec symbDiff (e:aexpr) x : aexpr =
+    match e with
+    | CstI _ -> CstI 0
+    | Var y when x=y -> CstI 1
+    | Var _ -> CstI 0
+    | Add(e1, e2) -> Add(symbDiff e1 x, symbDiff e2 x)
+    | Sub(e1, e2) -> Sub(symbDiff e1 x, symbDiff e2 x)
+    | Mul(e1, e2) -> Add(Mul(symbDiff e1 x, e2), Mul(e1, symbDiff e2 x))
 
+let diffTest1 = symbDiff (CstI 1) "x" // 0
+let diffTest2 = symbDiff (Var "x") "x" // 1
+let diffTest3 = symbDiff (Var "y") "x" // 0
+let diffTest4 = symbDiff (Add(Var "x", Var "y")) "x" // 1
+let diffTest5 = symbDiff (Add(Var "x", Var "y")) "y" // 1
+let diffTest6 = symbDiff (Add(Var "x", Var "x")) "x" // 2
+let diffTest7 = symbDiff (Sub(Var "x", Var "y")) "x" // 1
+let diffTest8 = symbDiff (Sub(Var "x", Var "y")) "y" // -1
+let diffTest9 = symbDiff (Sub(Var "x", Var "x")) "x" // 0
+let diffTest10 = symbDiff (Mul(Var "x", Var "y")) "x" // y
+let diffTest11 = symbDiff (Mul(Var "x", Var "y")) "y" // x
+let diffTest12 = symbDiff (Mul(Var "x", Var "x")) "x" // 2x
 
-
-
-
-
-    
-        
-
-
-
-
-
-
-
-
+printfn "%A should be 0" (diffTest1 |> simplify)
+printfn "%A should be 1" (diffTest2 |> simplify)
+printfn "%A should be 0" (diffTest3 |> simplify)
+printfn "%A should be 1" (diffTest4 |> simplify)
+printfn "%A should be 1" (diffTest5 |> simplify)
+printfn "%A should be 2" (diffTest6 |> simplify)
+printfn "%A should be 1" (diffTest7 |> simplify)
+printfn "%A should be -1" (diffTest8 |> simplify)
+printfn "%A should be 0" (diffTest9 |> simplify)
+printfn "%A should be y" (diffTest10 |> simplify)
+printfn "%A should be x" (diffTest11 |> simplify)
+printfn "%A should be 2x" (diffTest12 |> simplify)

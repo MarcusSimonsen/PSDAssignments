@@ -37,6 +37,8 @@ List.fold (fun acc x -> printfn "%A" x |> ignore; acc) res2 res2
 
 
 
+    
+
 (* ---------------------------------------------------------------------- *)
 
 (* Closedness *)
@@ -116,10 +118,12 @@ let rec tcomp (e : expr) (cenv : string list) : texpr =
     match e with
     | CstI i -> TCstI i
     | Var x  -> TVar (getindex cenv x)
-    | Let(x, erhs, ebody) -> 
-      let cenv1 = x :: cenv 
-      TLet(tcomp erhs cenv, tcomp ebody cenv1)
+    | Let(xs, ebody) -> 
+        let cenv1 = List.fold (fun acc (x, y) -> x :: acc) cenv xs 
+        TLet(tcomp xs cenv, tcomp ebody cenv1)
     | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv);;
+
+
 
 (* Evaluation of target expressions with variable indexes.  The
    run-time environment renv is a list of variable values (ints).  *)
