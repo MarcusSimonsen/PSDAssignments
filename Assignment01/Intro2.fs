@@ -139,6 +139,52 @@ printfn "%s" aexpr1s
 printfn "%s" aexpr2s
 printfn "%s" aexpr3s
 
+let rec simplify: aexpr -> aexpr = function
+    | CstI i -> CstI i
+    | Var x -> Var x
+    | Add(e1, e2) -> 
+        let e1v = simplify e1
+        let e2v = simplify e2
+        match e1v, e2v with
+        | CstI x, CstI y when x = 0 || y = 0 -> CstI (x ||| y)
+        | _ -> Add(e1v, e2v)
+    | Sub(e1, e2) ->
+        let e1v = simplify e1
+        let e2v = simplify e2
+        match e1v, e2v with
+        | _, CstI 0 -> e1v
+        | CstI x, CstI y when x = y -> CstI 0
+        | _ -> Sub(e1v, e2v)
+    | Mul(e1, e2) -> 
+        let e1v = simplify e1
+        let e2v = simplify e2
+        match e1v, e2v with
+        | CstI x, CstI y when x = 0 || y = 0 -> CstI 0
+        | CstI x, CstI y when x = 1 -> CstI y
+        | CstI x, CstI y when y = 1 -> CstI x
+        | _ -> Mul(e1v, e2v)
+
+let aexprTest1 = Add(CstI 1, Mul(CstI 2, CstI 0))
+let aexprTest2= Sub(CstI 4, Sub(CstI 23, CstI 23))
+
+let aexprTest1s = simplify aexprTest1
+let aexprTest2s = simplify aexprTest2
+
+printfn "%A" aexprTest1s
+
+printfn "%A" aexprTest2s
+
+
+//TODO: Lav exercise 1.2 V
+
+
+
+
+
+
+    
+        
+
 
 
 
