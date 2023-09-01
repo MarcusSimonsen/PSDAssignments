@@ -10,10 +10,11 @@ module Intcomp1
 type expr = 
   | CstI of int
   | Var of string
-  | Let of string * expr * expr
+  | Let of (string * expr) list * expr
   | Prim of string * expr * expr;;
 
 (* Some closed expressions: *)
+(*
 
 let e1 = Let("z", CstI 17, Prim("+", Var "z", Var "z"));;
 
@@ -35,7 +36,7 @@ let e7 = Let("z", CstI 3, Let("y", Prim("+", Var "z", CstI 1), Prim("+", Var "z"
 let e8 = Let("z", Let("x", CstI 4, Prim("+", Var "x", CstI 5)), Prim("*", Var "z", CstI 2))
 let e9 = Let("z", CstI 3, Let("y", Prim("+", Var "z", CstI 1), Prim("+", Var "x", Var "y")))
 let e10 = Let("z", Prim("+", Let("x", CstI 4, Prim("+", Var "x", CstI 5)), Var "x"), Prim("*", Var "z", CstI 2))
-
+*)
 (* ---------------------------------------------------------------------- *)
 
 (* Evaluation of expressions with variables and bindings *)
@@ -49,17 +50,23 @@ let rec eval e (env : (string * int) list) : int =
     match e with
     | CstI i            -> i
     | Var x             -> lookup env x 
-    | Let(x, erhs, ebody) -> 
-      let xval = eval erhs env
-      let env1 = (x, xval) :: env 
-      eval ebody env1
+    | Let(xs, ebody) -> eval ebody (List.fold (fun acc (x, y) -> (x, eval y acc) :: acc) env xs)
     | Prim("+", e1, e2) -> eval e1 env + eval e2 env
     | Prim("*", e1, e2) -> eval e1 env * eval e2 env
     | Prim("-", e1, e2) -> eval e1 env - eval e2 env
     | Prim _            -> failwith "unknown primitive";;
 
 let run e = eval e [];;
-let res = List.map run [e1;e2;e3;e4;e5;e7]  (* e6 has free variables *)
+//let res = List.map run [e1;e2;e3;e4;e5;e7]  (* e6 has free variables *)
+
+let exp1 = Let([("x1", Prim("+", CstI 5, CstI 7)); ("x2", Prim("*", Var "x1", CstI 2))], Prim("+", Var "x1", Var "x2"))
+
+let res2 = List.map run [exp1]
+
+List.fold (fun acc x -> printfn "%A" x |> ignore; acc) res2 res2
+
+
+
 
 
 (* ---------------------------------------------------------------------- *)
@@ -88,7 +95,7 @@ let rec closedin (e : expr) (vs : string list) : bool =
 (* An expression is closed if it is closed in the empty environment *)
 
 let closed1 e = closedin e [];;
-let _ = List.map closed1 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
+//let _ = List.map closed1 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
 
 (* ---------------------------------------------------------------------- *)
 
@@ -219,7 +226,7 @@ let rec freevars e : string list =
 (* Alternative definition of closed *)
 
 let closed2 e = (freevars e = []);;
-let _ = List.map closed2 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
+//let _ = List.map closed2 [e1;e2;e3;e4;e5;e6;e7;e8;e9;e10]
 
 (* ---------------------------------------------------------------------- *)
 
@@ -366,10 +373,10 @@ let rec scomp (e : expr) (cenv : stackvalue list) : sinstr list =
           scomp e1 cenv @ scomp e2 (Value :: cenv) @ [SMul] 
     | Prim _ -> failwith "scomp: unknown operator";;
 
-let s1 = scomp e1 [];;
-let s2 = scomp e2 [];;
-let s3 = scomp e3 [];;
-let s5 = scomp e5 [];;
+//let s1 = scomp e1 [];;
+//let s2 = scomp e2 [];;
+//let s3 = scomp e3 [];;
+//let s5 = scomp e5 [];;
 
 (* Output the integers in list inss to the text file called fname: *)
 
