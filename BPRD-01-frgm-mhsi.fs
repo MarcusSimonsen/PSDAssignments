@@ -1,5 +1,4 @@
 let env = [("a", 3); ("c", 78); ("baf", 666); ("b", 111)];;
-
 let emptyenv = []; (* the empty environment *)
 
 let rec lookup env x =
@@ -286,10 +285,19 @@ let rec tcomp (e : expr2) (cenv : string list) : texpr =
     | CstI i -> TCstI i
     | Var x  -> TVar (getindex cenv x)
     | Let(xs, ebody) -> 
-        let cenv1 = List.fold (fun (acc1,acc2)  (x, y) -> (x :: acc1, y :: acc2)) (cenv, []) xs
-        let exp = Let(xs, ebody)
-        TLet(tcomp exp cenv, tcomp ebody (fst cenv1))
+        let cenv1 = List.fold (fun acc (x, _) -> x :: acc) cenv xs
+        List.fold (fun acc (x, y) -> TLet(tcomp y cenv1, acc)) (tcomp ebody cenv1) xs
     | Prim(ope, e1, e2) -> TPrim(ope, tcomp e1 cenv, tcomp e2 cenv);;
+
+printfn "Printing tcomp tests";;
+let te1 = Prim("+", CstI 1, CstI 3);;
+let te2 = Prim("+", Var "x", Var "y");;
+let te3 = Let(["x", CstI 2], Var "x")
+let te4 = Let(["x", CstI 2; "y", Var "x"], Prim("+", Var "x", Var "y"));;
+printfn "%A => %A" (te1) (tcomp te1 ["x"; "y"]);;
+printfn "%A => %A" (te2) (tcomp te2 ["x"; "y"]);;
+printfn "%A => %A" (te3) (tcomp te3 ["x"; "y"]);;
+printfn "%A => %A" (te4) (tcomp te4 ["x"; "y"]);;
 
 let rec teval (e : texpr) (renv : int list) : int =
     match e with
