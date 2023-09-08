@@ -399,4 +399,5 @@ printfn "%A => %A" e1 (compile e1 [])
 let compile2File (e : expr) (cenv : stackvalue list) =
     intsToFile (assemble (scomp e cenv)) "fname"
 
+// 'e1' supports range 'e1'-'e5'. The different test expressions defined early in the file
 compile2File e1 []
