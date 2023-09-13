@@ -66,3 +66,32 @@ See file `2-2_NFA`.
 | S6             | {}                | {}      | S6 = {<u>7</u>}               |
 
 See file `2-2_DFA`.
+
+## HelloLex
+
+### Question 1
+
+The involved regular expressions are:
+
+```re
+[0-9]
+```
+
+This regular expression matches with any single digit between 0 and 9.
+
+### Question 2
+
+- `hello.fs`
+- 3 states are generated.
+
+### Question 3
+
+See file `hello.exe`.
+
+### Question 4
+
+See files `hello2.fsl`, `hello2.fs` & `hello2.exe`.
+
+### Question 5
+
+See files `hello3.fsl`, `hello3.fs` & `hello3.exe`.
