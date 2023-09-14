@@ -10,7 +10,7 @@ $\texttt{LET NAME z} = \texttt{Expr IN NAME z PLUS CSTINT 2 TIMES CSTINT 3 END E
 $\texttt{LET NAME z} = \texttt{(Expr) IN NAME z PLUS CSTINT 2 TIMES CSTINT 3 END EOF} \Rightarrow^C$
 $\texttt{LET NAME z} = \texttt{(CSTINT 17) IN NAME z PLUS CSTINT 2 TIMES CSTINT 3 END EOF} \Rightarrow$
 ## Exercise 3.4
-
+See file `3-4.jpg`.
 ## Exercise 3.5
 See files.
 ## Exercise 3.6
