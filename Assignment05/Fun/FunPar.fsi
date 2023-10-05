@@ -20,12 +20,12 @@ type token =
   | FALSE
   | IF
   | IN
-  | GOESTO
   | LET
-  | FUN
   | NOT
   | THEN
   | TRUE
+  | GOESTO
+  | FUN
   | CSTBOOL of (bool)
   | NAME of (string)
   | CSTINT of (int)
@@ -49,12 +49,12 @@ type tokenId =
     | TOKEN_FALSE
     | TOKEN_IF
     | TOKEN_IN
-    | TOKEN_GOESTO
     | TOKEN_LET
-    | TOKEN_FUN
     | TOKEN_NOT
     | TOKEN_THEN
     | TOKEN_TRUE
+    | TOKEN_GOESTO
+    | TOKEN_FUN
     | TOKEN_CSTBOOL
     | TOKEN_NAME
     | TOKEN_CSTINT

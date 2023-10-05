@@ -23,13 +23,14 @@ type 'v env = (string * 'v) list
 let rec lookup env x =
     match env with 
     | []        -> failwith (x + " not found")
-    | (y, v)::r -> if x=y then v else lookup r x;;
+    | (y, v)::r -> if x=y then v else lookup r x
 
 (* A runtime value is an integer or a function closure *)
 
 type value = 
   | Int of int
   | Closure of string * string * expr * value env       (* (f, x, fBody, fDeclEnv) *)
+  | Clos of string * expr * value env
 
 let rec eval (e : expr) (env : value env) : value =
     match e with
@@ -65,11 +66,12 @@ let rec eval (e : expr) (env : value env) : value =
         let xVal = eval eArg env
         let fBodyEnv = (x, xVal) :: (f, fClosure) :: fDeclEnv
         in eval fBody fBodyEnv
-      | _ -> failwith "eval Call: not a function";;
+      | _ -> failwith "eval Call: not a function"
+    | Fun(x, body) -> Clos(x, body, env)
 
 (* Evaluate in empty environment: program must have no free variables: *)
 
-let run e = eval e [];;
+let run e = eval e []
 
 (* Examples in abstract syntax *)
 
@@ -86,21 +88,21 @@ let ex2 = Letfun("fac", "x",
                                    Prim("-", Var "x", CstI 1)))),
                  Call(Var "fac", Var "n"));
 
-(* let fac10 = eval ex2 [("n", Int 10)];; *)
+(* let fac10 = eval ex2 [("n", Int 10)] *)
 
 let ex3 = 
     Letfun("tw", "g", 
            Letfun("app", "x", Call(Var "g", Call(Var "g", Var "x")), 
                   Var "app"),
            Letfun("mul3", "y", Prim("*", CstI 3, Var "y"), 
-                  Call(Call(Var "tw", Var "mul3"), CstI 11)));;
+                  Call(Call(Var "tw", Var "mul3"), CstI 11)))
 
 let ex4 = 
     Letfun("tw", "g",
            Letfun("app", "x", Call(Var "g", Call(Var "g", Var "x")), 
                   Var "app"),
            Letfun("mul3", "y", Prim("*", CstI 3, Var "y"), 
-                  Call(Var "tw", Var "mul3")));;
+                  Call(Var "tw", Var "mul3")))
 
 (* let add1 x = x + 1 in add1 end *)
 (*open Absyn*)
