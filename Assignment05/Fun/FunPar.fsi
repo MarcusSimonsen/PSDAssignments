@@ -20,7 +20,9 @@ type token =
   | FALSE
   | IF
   | IN
+  | GOESTO
   | LET
+  | FUN
   | NOT
   | THEN
   | TRUE
@@ -47,7 +49,9 @@ type tokenId =
     | TOKEN_FALSE
     | TOKEN_IF
     | TOKEN_IN
+    | TOKEN_GOESTO
     | TOKEN_LET
+    | TOKEN_FUN
     | TOKEN_NOT
     | TOKEN_THEN
     | TOKEN_TRUE
