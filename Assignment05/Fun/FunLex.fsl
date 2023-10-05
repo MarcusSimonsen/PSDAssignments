@@ -1,12 +1,12 @@
 {
  (* File Fun/Funlex.fsl 
     Lexer for a simple functional language (micro-ML) 
-    sestoft@itu.dk * 2010-01-02, 2021-04-05
+    sestoft@itu.dk * 2010-01-02
   *)
 
 module FunLex
 
-open FSharp.Text.Lexing
+open (*Microsoft.*) FSharp.Text.Lexing
 open FunPar;
 
 let lexemeAsString lexbuf = 
