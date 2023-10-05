@@ -4,7 +4,6 @@ public class Exercises {
         int[] ys = {2, 3, 4, 7};
 
         int[] zs = merge(xs, ys);
-
         for (int i = 0; i < zs.length; i++) {
             System.out.print(zs[i] + " ");
         }
