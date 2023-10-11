@@ -40,3 +40,106 @@ See file `6-4_ii.jpg`.
 
 ## Exercise 6.5
 
+### (1)
+
+```
+let f x = 1
+in f f end
+```
+Type: `int`
+
+```
+let f g = g g
+in f end
+```
+Type error: circularity
+
+```
+let f x =
+    let g y = y
+    in g false end
+in f 42 end
+```
+Type: bool
+
+```
+let f x =
+    let g y = if true then y else x
+    in g false end
+in f 42 end
+```
+Type error: bool and int
+
+```
+let f x =
+    let g y = if true then y else x
+    in g false end
+in f true end
+```
+Type: bool
+
+### (2)
+
+#### bool -> bool
+
+```
+let f x = if x then true else false
+in f end
+```
+
+#### int -> int
+
+```
+let f x = x + 1
+in f end
+```
+
+#### int -> int -> int
+
+```
+let f x =
+    let g y = x + y
+    in g end
+in f end
+```
+
+#### 'a -> 'b -> 'a
+
+```
+let f x =
+    let g y = x
+    in g end
+in f end
+```
+
+#### 'a -> 'b -> 'b
+
+```
+let f x =
+    let g y = y
+    in g end
+in f end
+```
+
+#### ('a -> 'b) -> ('b -> 'c) -> ('a -> 'c)
+
+```
+let f x =
+    let g y =
+        let h z = y (x z)
+        in h end
+    in g end
+in f end
+```
+
+#### 'a -> 'b
+
+```
+```
+
+
+#### 'a
+
+```
+```
+
