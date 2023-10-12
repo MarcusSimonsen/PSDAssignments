@@ -135,11 +135,11 @@ in f end
 #### 'a -> 'b
 
 ```
+let f x = f x in f end
 ```
 
 
 #### 'a
 
-```
-```
+We couldn't come up with a solution :(
 
