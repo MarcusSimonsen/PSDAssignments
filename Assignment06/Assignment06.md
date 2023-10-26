@@ -7,7 +7,7 @@ This assignment is completed by the students Frederik Gantriis Møller and Marcu
 ## Exercise 7.2
 
 See file `7-2.c` for the MicroC implementations.
-Run file `test7-2.sh` to compile and run the MicroC file.
+Run file `test7-2.sh` to parse and run the MicroC file.
 
 ## Exercise 7.4
 
