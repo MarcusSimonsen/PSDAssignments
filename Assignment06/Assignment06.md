@@ -5,3 +5,15 @@ This assignment is completed by the students Frederik Gantriis Møller and Marcu
 ## Exercise 7.1
 
 
+
+
+## Exercise 7.4
+
+See files `MicroC/Absyn.fs` and `MicroC/Interp.fs`.
+
+## Exercise 7.5
+
+See files `CLex.fsl` and `CPar.fsy` for code written.
+
+Run file `test7-5.sh` to see example of use.
+
