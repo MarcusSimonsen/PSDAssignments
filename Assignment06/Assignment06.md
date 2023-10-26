@@ -4,6 +4,25 @@ This assignment is completed by the students Frederik Gantriis Møller and Marcu
 
 ## Exercise 7.1
 
+Abstract syntax tree of `ex1.c`:
+Prog
+    [Fundec
+       (None, "main", [(TypI, "n")],
+        Block
+          [Stmt
+             (While
+                (Prim2 (">", Access (AccVar "n"), CstI 0),
+                 Block
+                   [Stmt (Expr (Prim1 ("printi", Access (AccVar "n"))));
+                    Stmt
+                      (Expr
+                         (Assign
+                            (AccVar "n",
+                             Prim2 ("-", Access (AccVar "n"), CstI 1))))]));
+           Stmt (Expr (Prim1 ("printc", CstI 10)))])]
+
+For drawing, see `Exercise7-1.jpg`.
+
 ## Exercise 7.2
 
 See file `7-2.c` for the MicroC implementations.
