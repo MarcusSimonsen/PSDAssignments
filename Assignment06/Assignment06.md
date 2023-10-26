@@ -28,6 +28,11 @@ For drawing, see `Exercise7-1.jpg`.
 See file `7-2.c` for the MicroC implementations.
 Run file `test7-2.sh` to parse and run the MicroC file.
 
+## Exercise 7.3
+
+See file `7-3.c`.
+Run file `test7-3.sh` to test.
+
 ## Exercise 7.4
 
 See files `MicroC/Absyn.fs` and `MicroC/Interp.fs`.
