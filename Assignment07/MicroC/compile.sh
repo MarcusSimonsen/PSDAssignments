@@ -1,0 +1,1 @@
+echo "open ParseAndComp;; compileToFile (fromFile \"ex11.c\") \"ex11.out\";; #q;; " | dotnet fsi -r FsLexYacc.Runtime.dll Absyn.fs CPar.fs CLex.fs Parse.fs Machine.fs Comp.fs ParseAndComp.fs && javac Machine.java && java Machine ex11.out 8
