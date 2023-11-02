@@ -68,6 +68,7 @@ rule Token = parse
   | "&&"            { SEQAND }                     
   | "&"             { AMP }                     
   | "!"             { NOT }                     
+  | '?'             { TERNARY }
   | '('             { LPAR }
   | ')'             { RPAR }
   | '{'             { LBRACE }
