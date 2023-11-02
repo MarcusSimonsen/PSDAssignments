@@ -1,1 +1,1 @@
-./compileAndRun.sh 8-5.c
+./compileAndRun.sh 8-6.c
