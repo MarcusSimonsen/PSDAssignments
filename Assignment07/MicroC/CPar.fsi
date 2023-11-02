@@ -9,6 +9,7 @@ type token =
   | LBRACK
   | RBRACK
   | SEMI
+  | COLON
   | COMMA
   | ASSIGN
   | AMP
@@ -38,6 +39,8 @@ type token =
   | RETURN
   | VOID
   | WHILE
+  | SWITCH
+  | CASE
   | CSTSTRING of (string)
   | NAME of (string)
   | CSTINT of (int)
@@ -51,6 +54,7 @@ type tokenId =
     | TOKEN_LBRACK
     | TOKEN_RBRACK
     | TOKEN_SEMI
+    | TOKEN_COLON
     | TOKEN_COMMA
     | TOKEN_ASSIGN
     | TOKEN_AMP
@@ -80,6 +84,8 @@ type tokenId =
     | TOKEN_RETURN
     | TOKEN_VOID
     | TOKEN_WHILE
+    | TOKEN_SWITCH
+    | TOKEN_CASE
     | TOKEN_CSTSTRING
     | TOKEN_NAME
     | TOKEN_CSTINT
@@ -107,6 +113,8 @@ type nonTerminalId =
     | NONTERM_Access
     | NONTERM_Exprs
     | NONTERM_Exprs1
+    | NONTERM_Case
+    | NONTERM_Cases
     | NONTERM_Const
     | NONTERM_Type
 /// This function maps tokens to integer indexes
