@@ -75,6 +75,7 @@ rule Token = parse
   | '['             { LBRACK }
   | ']'             { RBRACK }
   | ';'             { SEMI }
+  | ':'             { COLON }
   | ','             { COMMA }
   | "++"            { PREINC }
   | "--"            { PREDEC }
