@@ -2,6 +2,21 @@
 
 ## 8.1
 
+[LDARGS;
+CALL (1, "L1"); STOP;
+Label "L1"; INCSP 1; GETBP; CSTI 1;         int i; i=0;
+    ADD; CSTI 0; STI; INCSP -1;
+GOTO "L3";
+Label "L2"; GETBP; CSTI 1; ADD; LDI;       print i; i=i+1; 
+    PRINTI; INCSP -1; GETBP; CSTI 1; 
+    ADD; GETBP; CSTI 1; ADD; LDI; CSTI 1; 
+    ADD; STI; INCSP -1; INCSP 0;
+Label "L3"; GETBP; CSTI 1; ADD; LDI;        while
+    GETBP; CSTI 0; ADD; LDI; LT;
+IFNZRO "L2"; INCSP -1; RET 0]               (i<n)          
+
+
+
 ## 8.3
 
 See files `Absyn.fs`, `CLex.fsl`, `CPar.fsy`, `Comp.fs` & `Contcomp.fs` for implementation of PreInc and PreDec.
