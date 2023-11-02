@@ -10,6 +10,75 @@ Run file `8-3.sh` to run MicroC test code of PreInc and PreDec.
 
 ## 8.4
 
+### ex8.c
+
+The compiled bytecode of `ex8.c`:
+
+[LDARGS; CALL (0, "L1"); STOP;
+Label "L1";
+    INCSP 1;
+    GETBP; CSTI 0; ADD;             | int i;
+    CSTI 20000000; STI;             | i = 20000000;
+    INCSP -1;
+    GOTO "L3";
+Label "L2";
+    GETBP; CSTI 0; ADD;
+    GETBP; CSTI 0; ADD; LDI;        | load i
+    CSTI 1; SUB; STI;               | i = i - 1;
+    INCSP -1;
+    INCSP 0;
+Label "L3";
+    GETBP; CSTI 0; ADD; LDI;        | load i
+    IFNZRO "L2";                    | while(i)
+    INCSP -1; RET -1]
+
+The main reason to why the bytecode from `ex8.c` is so much slower than `prog1` is because the `ex8.c` bytecode reads and writes to and from memory in every loop iteration. These are **very** costly operations, which are avoided in `prog1`.
+
+### ex13.c
+
+The compiled bytecode of `ex13.c`:
+
+[LDARGS; CALL (1, "L1"); STOP;
+Label "L1";
+    INCSP 1;
+    GETBP; CSTI 1; ADD;                                         | int y;
+    CSTI 1889; STI;                                             | y = 1889;
+    INCSP -1;
+    GOTO "L3";
+Label "L2";
+    GETBP; CSTI 1; ADD;
+    GETBP; CSTI 1; ADD; LDI; CSTI 1; ADD; STI;                  | y = y + 1;
+    INCSP -1;
+    GETBP; CSTI 1; ADD; LDI; CSTI 4; MOD; CSTI 0; EQ;           | y % 4 == 0
+    IFZERO "L7";                                                | if false, skip next calculation
+    GETBP; CSTI 1; ADD; LDI; CSTI 100; MOD; CSTI 0; EQ; NOT;    | y % 100 != 0
+    IFNZRO "L9";
+    GETBP; CSTI 1; ADD; LDI; CSTI 400; MOD; CSTI 0; EQ;         | y % 400 == 0
+    GOTO "L8";
+Label "L9";
+    CSTI 1;
+Label "L8";
+    GOTO "L6";
+Label "L7";
+    CSTI 0;
+Label "L6";
+    IFZERO "L4";
+    GETBP; CSTI 1; ADD; LDI; PRINTI;                            | print y;
+    INCSP -1;
+    GOTO "L5";
+Label "L4";
+    INCSP 0;
+Label "L5";
+    INCSP 0;
+Label "L3";
+    GETBP; CSTI 1; ADD; LDI;                                    | load y
+    GETBP; CSTI 0; ADD; LDI;                                    | load n
+    LT; IFNZRO "L2";                                            | while (y < n)
+    INCSP -1; RET 0]
+
+Above is the bytecode roughly broken down into the different statements etc. from the MicroC program.
+As can be seen from the bytecode, the compiler uses many Labels in order to control the control flow of the program.
+
 ## 8.5
 
 ## 8.6
