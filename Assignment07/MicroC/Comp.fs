@@ -127,6 +127,15 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) : instr list =
       let labtest  = newLabel()
       [GOTO labtest; Label labbegin] @ cStmt body varEnv funEnv
       @ [Label labtest] @ cExpr e varEnv funEnv @ [IFNZRO labbegin]
+    | Switch(e, cases) ->
+      let labend = newLabel()
+      let case_labels = List.map (fun c -> match c with | Case(i, s) -> newLabel()) cases
+      cExpr e varEnv funEnv
+      @ List.fold (fun acc (c, lab) -> match c with | Case(i, s) -> acc @ [DUP; CSTI i; EQ; IFNZRO lab]) [] (List.zip cases case_labels)
+      @ [ GOTO labend ] (* If no case matches, jump to end *)
+      @ List.fold (fun acc (c, lab) -> match c with | Case(i, s) -> acc @ Label lab :: cStmt s varEnv funEnv @ [GOTO labend]) [] (List.zip cases case_labels)
+      @ [Label labend; INCSP -1]
+
     | Expr e -> 
       cExpr e varEnv funEnv @ [INCSP -1]
     | Block stmts -> 
