@@ -33,6 +33,7 @@ and access =
                                                                    
 and stmt =                                                         
   | If of expr * stmt * stmt         (* Conditional                 *)
+  | Switch of expr * case list       (* Switch statement            *)
   | While of expr * stmt             (* While loop                  *)
   | Expr of expr                     (* Expression statement   e;   *)
   | Return of expr option            (* Return from method          *)
@@ -41,6 +42,9 @@ and stmt =
 and stmtordec =                                                    
   | Dec of typ * string              (* Local variable declaration  *)
   | Stmt of stmt                     (* A statement                 *)
+
+and case = 
+  | Case of int * stmt               (* Case in switch statement    *)
 
 and topdec = 
   | Fundec of typ option * string * (typ * string) list * stmt
