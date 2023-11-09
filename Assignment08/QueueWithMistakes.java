@@ -29,7 +29,7 @@ class QueueWithMistake {
   }
 
   private static void runThreads(final int threads, final Queue queue) {
-    final int iterations = 200000000; // Increase this constant if program does not run out of memory.
+    final int iterations = 1500000;  // Increase this constant if program does not run out of memory. EDIT: originally was it 200000000
     final Timer timer = new Timer();
     Thread[] ts = new Thread[threads];
     queue.put(-6);
