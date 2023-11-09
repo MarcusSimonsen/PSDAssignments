@@ -4,5 +4,6 @@ This assignment is completed by the students Frederik Gantriis Møller and Marcu
 
 ## Exercise 9.1
 
-See file `/virtual/Selsort.il` for description and translation of C# code.
+See file `/virtual/Selsort.il` for description and translation of C# bytecode.
+See file `/virtual/Selsort.jvmbytecode` for description and translation of Java bytecode.
 
