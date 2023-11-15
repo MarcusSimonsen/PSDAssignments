@@ -141,3 +141,6 @@ cell.
 
 ### (iv)
 
+The garbage collector's `collect(...)` function is called when the
+`allocate(...)` function is called and no large enough space is found.
+
