@@ -53,12 +53,12 @@ The abstract machine first allocates space in the heap for the cons cell with
 space for the two words. Then it pops two values from the stack and puts these
 values into the cons cell. After this the reference to the cons cell is pushed
 to the stack.
-More specifically the machine first uses the `allocate` function to attempt to
-allocate space in the heap for the cons cell. The reference returned by allocate
-is saved in a local variable. The top two values are then popped from the stack
-and written into the cons cell. Lastly the reference to the cons cell is set on
-the stack and the stack pointer is updated by subtracting one (since two value
-are popped and one is pushed).
+More specifically the machine first uses the `allocate(...)` function to attempt
+to allocate space in the heap for the cons cell. The reference returned by
+`allocate(...)` is saved in a local variable. The top two values are then popped
+from the stack and written into the cons cell. Lastly the reference to the cons
+cell is set on the stack and the stack pointer is updated by subtracting one
+(since two value are popped and one is pushed).
 
 #### CAR
 
@@ -90,4 +90,54 @@ the cons cell and `v` is the local variable holding the value to be set in the
 cons cell.
 
 ### (ii)
+
+A block header is a word of 32 bits where each bit has the following meanings:
+`ttttttttnnnnnnnnnnnnnnnnnnnnnngg`
+`t` means it is a tag bit, `n` means it is a length bit, and `g` means it is a
+garbage collection bit.
+
+#### Length
+
+The `Length` returns all the `n` bits from the header, shifted to the right and
+fills all other bits with zeros. I.e. `ttttttttnnnnnnnnnnnnnnnnnnnnnngg` becomes
+`0000000000nnnnnnnnnnnnnnnnnnnnnn`. The way this is achieved is by first
+bit-shifting the bits two to the right meaning that the header becomes
+`00ttttttttnnnnnnnnnnnnnnnnnnnnnn`. Then a bitwise and `&` operation is used
+with the fixed value `0x003FFFFF`, so that `00ttttttttnnnnnnnnnnnnnnnnnnnnnn`
+becomes `0000000000nnnnnnnnnnnnnnnnnnnnnn`. This makes more sense if we write
+the constant in the bit format instead of the hexadecimal format:
+`00000000001111111111111111111111`. Here the 22 least significant bits are all
+1, thereby meaning that when this is used in the bitwise and operation, the 22
+least significant bits from the header is kept as is.
+
+#### Color
+
+The `Color` macro returns the color of the header, i.e. the two least
+significant bits from the header (the two `g` bits). This is done by simply
+using a bitwise and `&` operation between the header and the constant `3`. The
+reason for using the constant 3 becomes apparent when we write the constant 3 in
+its bitwise form: `00000000000000000000000000000011`. When doing a bitwise and
+operation with this constant and any word `n`, the two least significant bits of
+`n` is kept as is and the rest is set to zeros.
+
+#### Paint
+
+The `Paint` macro takes a header and a color and sets the color bits `g` of the
+header to the color specified by the color. This is done by first setting the
+two color bits in the header to 0 by doing a bitwise and `&` between the header
+and the constant `~3`. The `~3` is used to get a constant with all zeros except
+the two least significant bits, which are the color bits. Then a bitwise or `|`
+is used to get all the header bits except the colors which are set to zero from
+the header and the two color bits from the color parameter.
+A small note here is that incorrect usage of this macro can lead to problem,
+since if the color parsed to this macro has bits other than the two color bits
+set to 1, then this will change the other parts of the header.
+
+### (iii)
+
+The `allocate(...)` function is called when the abstract machine executes the
+`CONS` instruction. Here it is used to allocate space on the heap for a cons
+cell.
+
+### (iv)
 
