@@ -224,7 +224,7 @@ void printInstruction(word p[], word pc) {
   case CALL:   printf("CALL " WORD_FMT " " WORD_FMT, p[pc + 1], p[pc + 2]);
                break;
   case TCALL:  printf("TCALL " WORD_FMT " " WORD_FMT " " WORD_FMT,
-		      p[pc + 1], p[pc + 2], p[pc + 3]);
+          p[pc + 1], p[pc + 2], p[pc + 3]);
                break;
   case RET:    printf("RET " WORD_FMT, p[pc + 1]); break;
   case PRINTI: printf("PRINTI"); break;
@@ -260,7 +260,7 @@ word* allocate(unsigned int tag, uword length, word s[], word sp);
 // The machine: execute the code starting at p[pc] 
 
 int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trace) {
-	
+  
   word bp = -999;        // Base pointer, for local variable access 
   word sp = -1;          // Stack top pointer
   word pc = 0;           // Program counter: next instruction
@@ -316,7 +316,7 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
       word argc = p[pc++];
       int i;
       for (i = 0; i < argc; i++)               // Make room for return address
-	s[sp - i + 2] = s[sp - i];             // and old base pointer
+  s[sp - i + 2] = s[sp - i];             // and old base pointer
       s[sp - argc + 1] = Tag(pc + 1); sp++;
       s[sp - argc + 1] = Tag(bp);   sp++;
       bp = sp + 1 - argc;
@@ -327,7 +327,7 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
       word pop = p[pc++];                  // Number of variables to discard
       word i;
       for (i = argc - 1; i >= 0; i--)    // Discard variables
-	s[sp - i - pop] = s[sp - i];
+  s[sp - i - pop] = s[sp - i];
       sp = sp - pop; pc = p[pc];
     } break;
     case RET: {
@@ -342,7 +342,7 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
     case LDARGS: {
       int i;
       for (i = 0; i < iargc; i++) // Push commandline arguments
-	s[++sp] = Tag(iargs[i]);
+  s[++sp] = Tag(iargs[i]);
     } break;
     case STOP:
       return 0;
@@ -358,14 +358,14 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
     case CAR: {
       word* p = (word*)s[sp];
       if (p == 0) {
-	printf("Cannot take car of null\n"); return -1;
+  printf("Cannot take car of null\n"); return -1;
       }
       s[sp] = (word)(p[1]);
     } break;
     case CDR: {
       word* p = (word*)s[sp];
       if (p == 0) {
-	printf("Cannot take cdr of null\n"); return -1;
+  printf("Cannot take cdr of null\n"); return -1;
       }
       s[sp] = (word)(p[2]);
     } break;
@@ -381,7 +381,7 @@ int execcode(word p[], word s[], word iargs[], int iargc, int /* boolean */ trac
     } break;
     default:
       printf("Illegal instruction " WORD_FMT " at address " WORD_FMT "\n",
-	     p[pc - 1], pc - 1);
+       p[pc - 1], pc - 1);
       return -1;
     }
   }
@@ -438,7 +438,7 @@ void heapStatistics() {
     word* nextBlock = heapPtr + Length(heapPtr[0]) + 1;
     if (nextBlock > afterHeap) {
       printf("HEAP ERROR: block at heap[" WORD_FMT "] extends beyond heap\n",
-	     (word)(heapPtr - heap));
+       (word)(heapPtr - heap));
       exit(-1);
     }
     heapPtr = nextBlock;
@@ -449,7 +449,7 @@ void heapStatistics() {
     int length = Length(freePtr[0]);
     if (freePtr < heap || afterHeap < freePtr + length + 1) {
       printf("HEAP ERROR: freelist item " WORD_FMT " (at heap[" WORD_FMT "], length %d) is outside heap\n",
-	     free, (word)(freePtr - heap), length);
+       free, (word)(freePtr - heap), length);
       exit(-1);
     }
     freeSize += length;
@@ -459,7 +459,7 @@ void heapStatistics() {
     freePtr = (word*)freePtr[1];
   }
   printf("Heap: " WORD_FMT " blocks (" WORD_FMT " words); of which " WORD_FMT " free (" WORD_FMT " words, largest " WORD_FMT " words); " WORD_FMT " orphans\n",
-	 blocks, blocksSize, free, freeSize, largestFree, orphans);
+   blocks, blocksSize, free, freeSize, largestFree, orphans);
 }
 
 void initheap() {
@@ -471,14 +471,51 @@ void initheap() {
   freelist = &heap[0];
 }
 
+void mark(word *p) {
+  if (!inHeap(p)) return;
+  heap[*p] = Paint(heap[*p], Black);
+  if (IsInt(p[0]) && Color(p[0]) == White)
+    mark((word*)heap[p[0]]);
+}
+
 void markPhase(word s[], word sp) {
   printf("marking ...\n");
-  // TODO: Actually mark something
+  for (int i = 0; i < sp; i++) {
+    if (IsInt(s[i]) && Color(s[i]) == White) {
+      mark((word*)s[i]);
+    }
+  }
 }
 
 void sweepPhase() {
   printf("sweeping ...\n");
-  // TODO: Actually sweep
+  // Mark all white blocks blue and add them to the freelist
+  // Mark all black blocks white
+  // Add all blue blocks to the freelist
+  word* heapPtr = heap;
+  word* prev = 0;
+  while (heapPtr < afterHeap) {
+    if (Length(heapPtr[0]) > 0) {
+      if (Color(heapPtr[0]) == White) {
+        heapPtr[0] = Paint(heapPtr[0], Blue);
+        heapPtr[1] = (word)freelist;
+        freelist = heapPtr;
+      }
+      else if (Color(heapPtr[0]) == Black) {
+        heapPtr[0] = Paint(heapPtr[0], White);
+      }
+      else if (Color(heapPtr[0]) == Blue) {
+        if (prev != 0) {
+          prev[1] = (word)heapPtr;
+        }
+        prev = heapPtr;
+      }
+    }
+    heapPtr += Length(heapPtr[0]) + 1;
+  }
+  if (prev != 0) {
+    prev[1] = (word)0;
+  }
 }
 
 void collect(word s[], word sp) {
@@ -495,20 +532,20 @@ word* allocate(unsigned int tag, uword length, word s[], word sp) {
     word** prev = &freelist;
     while (free != 0) {
       word rest = Length(free[0]) - length;
-      if (rest >= 0) {
-	if (rest == 0) // Exact fit with free block
-	  *prev = (word*)free[1];
-	else if (rest == 1) { // Create orphan (unusable) block
-	  *prev = (word*)free[1];
-	  free[length + 1] = mkheader(0, rest - 1, Blue);
-	}
-	else { // Make previous free block point to rest of this block
-	  *prev = &free[length + 1];
-	  free[length + 1] = mkheader(0, rest - 1, Blue);
-	  free[length + 2] = free[1];
-	}
-	free[0] = mkheader(tag, length, White);
-	return free;
+     if (rest >= 0) {
+  if (rest == 0) // Exact fit with free block
+    *prev = (word*)free[1];
+  else if (rest == 1) { // Create orphan (unusable) block
+    *prev = (word*)free[1];
+    free[length + 1] = mkheader(0, rest - 1, Blue);
+  }
+  else { // Make previous free block point to rest of this block
+    *prev = &free[length + 1];
+    free[length + 1] = mkheader(0, rest - 1, Blue);
+    free[length + 2] = free[1];
+  }
+  free[0] = mkheader(tag, length, White);
+  return free;
       }
       prev = (word**)&free[1];
       free = (word*)free[1];
@@ -526,15 +563,15 @@ word* allocate(unsigned int tag, uword length, word s[], word sp) {
 int main(int argc, char** argv) {
   #if defined(ENV64)
     if (sizeof(word) != 8 ||
-	sizeof(word*) != 8 ||
-	sizeof(uword) != 8) {
+  sizeof(word*) != 8 ||
+  sizeof(uword) != 8) {
       printf("Size of word, word* is not 64 bit, cannot run\n");
       return -1;
     }
   #elif defined(ENV32)
     if (sizeof(word) != 4 ||
-	sizeof(word*) != 4 ||
-	sizeof(uword) != 4) {
+  sizeof(word*) != 4 ||
+  sizeof(uword) != 4) {
       printf("Size of word, word* is not 32 bit, cannot run\n");
       return -1;
     }
