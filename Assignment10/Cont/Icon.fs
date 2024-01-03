@@ -20,7 +20,7 @@
         expression e has no result.
  *)
 
-module Icon
+(* module Icon *)
 
 (* Micro-Icon abstract syntax *)
 
