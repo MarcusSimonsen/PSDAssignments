@@ -496,6 +496,13 @@ void sweepPhase() {
   word* prev = 0;
   while (heapPtr < afterHeap) {
     if (Length(heapPtr[0]) > 0) {
+      // Join if next block is also white
+      // While next block is white
+      while (heapPtr + Length(heapPtr[0]) + 1 < afterHeap &&
+       Color(heapPtr[Length(heapPtr[0]) + 1]) == White) {
+        // Join current and next block
+        heapPtr[0] = mkheader(0, Length(heapPtr[0]) + Length(heapPtr[Length(heapPtr[0]) + 1]) + 1, White);
+      }
       if (Color(heapPtr[0]) == White) {
         heapPtr[0] = Paint(heapPtr[0], Blue);
         heapPtr[1] = (word)freelist;
