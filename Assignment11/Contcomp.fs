@@ -103,7 +103,12 @@ let rec addCST i C =
     | (0, IFNZRO lab :: C1) -> C1
     | (_, IFNZRO lab :: C1) -> addGOTO lab C1
     | _                     -> CSTI i :: C
-            
+
+let addIFZERO lab3 C =
+    match C with
+    | IFZERO lab3' :: GOTO lab2 :: Label lab1 :: C1 when lab3'=lab3 && lab3=lab1 -> IFNZRO lab2 :: Label lab1 :: C1
+    | _ -> C
+
 (* ------------------------------------------------------------------- *)
 
 (* Simple environment operations *)
@@ -188,8 +193,8 @@ let rec cStmt stmt (varEnv : varEnv) (funEnv : funEnv) (C : instr list) : instr 
     | If(e, stmt1, stmt2) -> 
       let (jumpend, C1) = makeJump C
       let (labelse, C2) = addLabel (cStmt stmt2 varEnv funEnv C1)
-      cExpr e varEnv funEnv (IFZERO labelse 
-       :: cStmt stmt1 varEnv funEnv (addJump jumpend C2))
+      cExpr e varEnv funEnv (addIFZERO labelse (IFZERO labelse 
+       :: cStmt stmt1 varEnv funEnv (addJump jumpend C2)))
     | While(e, body) ->
       let labbegin = newLabel()
       let (jumptest, C1) = 
