@@ -134,6 +134,9 @@ let rec evalExpr (env : value env) (e : expr<typ>)
   | Seq(e1,e2,_) ->
       evalExpr env e1 (* Disregard result of e1 and return e2 *)
         (fun _ -> evalExpr env e2 cont econt) econt
+  | Pair(e1,e2,_) ->
+      evalExpr env e1
+        (fun v1 -> evalExpr env e2 (fun v2 -> cont (List [v1;v2])) econt) econt
   | Let(valdecs,letBody) -> evalValdecs env valdecs letBody cont econt
   | If(e1, e2, e3) ->
       evalExpr env e1
@@ -204,6 +207,7 @@ let check e =
     | AndAlso(e1,e2,_) -> check' e1 env && check' e2 env
     | OrElse(e1,e2,_) -> check' e1 env && check' e2 env
     | Seq(e1,e2,_) -> check' e1 env && check' e2 env
+    | Pair(e1,e2,_) -> check' e1 env && check' e2 env
     | Let(valdecs, letbody) -> fst (List.fold checkValdec' (true,env) valdecs)
     | If(e1, e2, e3) -> check' e1 env &&
                         check' e2 env &&

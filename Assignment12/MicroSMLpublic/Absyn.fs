@@ -10,6 +10,7 @@ type expr<'a> =
   | AndAlso of expr<'a> * expr<'a> * 'a option
   | OrElse of expr<'a> * expr<'a> * 'a option
   | Seq of expr<'a> * expr<'a> * 'a option
+  | Pair of expr<'a> * expr<'a> * 'a option
   | Prim2 of string * expr<'a> * expr<'a> * 'a option
   | Prim1 of string * expr<'a> * 'a option
   | If of expr<'a> * expr<'a> * expr<'a>
@@ -48,6 +49,7 @@ let ppProg fPP p : string =
     | AndAlso(e1,e2,aOpt) -> "(" + (ppExpr' i e1) + " && " + (ppExpr' i e2) + ")" + (fPP aOpt)
     | OrElse (e1,e2,aOpt) -> "(" + (ppExpr' i e1) + " || " + (ppExpr' i e2) + ")" + (fPP aOpt)
     | Seq(e1,e2,aOpt) -> "(" + (ppExpr' i e1) + " ; " + (ppExpr' i e2) + ")" + (fPP aOpt)
+    | Pair(e1,e2,aOpt) -> "(" + (ppExpr' i e1) + ", " + (ppExpr' i e2) + ")" + (fPP aOpt)
     | Let(valdecs,letBody) ->
       "\n" + (indent (i+2)) + "let\n" + (ppValdecs (i+4) valdecs) + "\n" + (indent (i+2)) + "in\n" +
         (indent (i+4)) + (ppExpr' (i+2) letBody) + "\n" + (indent (i+2)) + "end"
@@ -89,6 +91,7 @@ let rec getOptExpr e : 'a Option =
   | AndAlso(_,_,aOpt) -> aOpt
   | OrElse(_,_,aOpt) -> aOpt
   | Seq(_,_,aOpt) -> aOpt
+  | Pair(_,_,aOpt) -> aOpt
   | Prim2(ope,e1,e2,aOpt) -> aOpt
   | Prim1(ope,e,aOpt) -> aOpt
   | If(e1,e2,e3) -> getOptExpr e3       (* e2 and e3 has same type *)
@@ -108,6 +111,7 @@ let tailcalls p : program<'a> =
     | AndAlso(e1,e2,aOpt) -> AndAlso(tc' false e1,tc' tPos e2,aOpt)
     | OrElse(e1,e2,aOpt) -> OrElse(tc' false e1,tc' tPos e2,aOpt)
     | Seq(e1,e2,aOpt) -> Seq(tc' false e1,tc' tPos e2,aOpt)
+    | Pair(e1,e2,aOpt) -> Pair(tc' false e1,tc' false e2,aOpt)
     | Prim2(ope,e1,e2,aOpt) -> Prim2(ope,tc' false e1,tc' false e2,aOpt)
     | Prim1(ope,e,aOpt) -> Prim1(ope,tc' false e,aOpt)
     | If(e1,e2,e3) -> If(tc' false e1,tc' tPos e2,tc' tPos e3)
@@ -139,6 +143,7 @@ let rec freevars e : string Set =
   | AndAlso(e1,e2,_) -> (freevars e1) + (freevars e2)
   | OrElse(e1,e2,_) -> (freevars e1) + (freevars e2)
   | Seq(e1,e2,_) -> (freevars e1) + (freevars e2)
+  | Pair(e1,e2,_) -> (freevars e1) + (freevars e2)
   | Let(valdecs,letBody) ->
     (* Below (... +fvs - bvs) assumes alpha conversion. See ex11.sml for an example where
        it fails. Alpha conversion is covered as an exercise. *)  

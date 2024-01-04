@@ -1,9 +1,9 @@
 fslex --unicode FunLex.fsl
 fsyacc --module FunPar FunPar.fsy    
 
-fsharpc --standalone -r:/Users/nielshallenberg/fsharp/FsLexYacc.Runtime.dll Absyn.fs FunPar.fs FunLex.fs TypeInference.fs HigherFun.fs Machine.fs Contcomp.fs ParseTypeAndRun.fs MicroSMLC.fs -o microsmlc.exe
+fsharpc --standalone -r ~/bin/fsharp/FsLexYacc.Runtime.dll Absyn.fs FunPar.fs FunLex.fs TypeInference.fs HigherFun.fs Machine.fs Contcomp.fs ParseTypeAndRun.fs MicroSMLC.fs -o microsmlc.exe
 
-#fsharpc --standalone -r:/Users/nh/fsharp/FsLexYacc.Runtime.dll Absyn.fs FunPar.fs FunLex.fs TypeInference.fs HigherFun.fs Machine.fs Comp.fs ParseTypeAndRun.fs MicroSMLC.fs -o microsmlc.exe
+#fsharpc --standalone -r:~/bin/fsharp/FsLexYacc.Runtime.dll Absyn.fs FunPar.fs FunLex.fs TypeInference.fs HigherFun.fs Machine.fs Comp.fs ParseTypeAndRun.fs MicroSMLC.fs -o microsmlc.exe
 
 gcc -Wall msmlmachinewgc.c -o msmlmachine
 

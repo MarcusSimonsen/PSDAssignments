@@ -14,14 +14,14 @@
 
 %token BEGIN ELSE END FALSE IF IN LET VAL NOT THEN TRUE
 %token TRY WITH EXN RAISE
-%token FUN FN RARROW AND
+%token FUN FN RARROW AND FST SND
 %token PLUS MINUS TIMES DIV MOD
 %token EQ NE GT LT GE LE SEQAND SEQOR
 %token CONS NIL HEAD TAIL
-%token LPAR RPAR SEMICOLON COLON
+%token LPAR RPAR SEMICOLON COLON COMMA
 %token EOF
 
-%left SEMICOLON               /* lowest precedence  */
+%left SEMICOLON COMMA               /* lowest precedence  */
 %nonassoc LET
 %nonassoc END
 %nonassoc FUN FN TRY WITH RARROW
@@ -84,12 +84,13 @@ Expr:
   | Expr LT    Expr                     { Prim2("<",  $1, $3, None)            }
   | Expr GE    Expr                     { Prim2(">=", $1, $3, None)            }
   | Expr LE    Expr                     { Prim2("<=", $1, $3, None)            }
-  | Expr CONS  Expr                     { Prim2("::",$1, $3, None)           }
+  | Expr CONS  Expr                     { Prim2("::",$1, $3, None)             }
   | HEAD Expr                           { Prim1("hd", $2, None)                }
   | TAIL Expr                           { Prim1("tl", $2, None)                }
   | Expr SEQAND Expr                    { AndAlso($1, $3, None)                }
   | Expr SEQOR Expr                     { OrElse($1, $3, None)                 }
   | Expr SEMICOLON Expr                 { Seq($1, $3, None)                    }
+  | LPAR Expr COMMA Expr RPAR           { Pair($2, $4, None)                   }
 ;
 
 AtExpr:

@@ -231,6 +231,9 @@ let rec cExpr (kind: int->var) (varEnv : varEnv) (e : expr<typ>) (C: instr list)
     cExpr kind varEnv e1 
       (addINCSP -1 (* Remove result of e1 *)
         (cExpr kind varEnv e2 C))
+  | Pair(e1,e2,_) ->
+    cExpr kind varEnv e1
+      (cExpr kind (incVarIdx varEnv 1) e2 (CONS :: C))
   | Let(valdecs,letBody) ->
     let ((_,fdepth') as bodyEnv,vdEnvs) =
       List.fold (fun (accEnv,accVdEnv) vd -> let (nextEnv,vdEnv) = genValdecEnv kind accEnv vd
