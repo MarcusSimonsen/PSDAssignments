@@ -44,6 +44,7 @@ type 'v env = (string * 'v) list
 type value = 
   | Int of int
   | List of value list
+  | PairV of value * value
   | ClosureRef of closure ref
 and closure =
   Closure of string * string * expr<typ> * value env       (* (f, x, fBody, fDeclEnv) *)
@@ -59,6 +60,7 @@ let rec ppValue = function
   | ClosureRef closRef ->
     match !closRef with
     | Closure(f,x,fBody,fDeclEnv) -> "Closure("+f+","+x+"fBody" + "," + "fDeclEnv" + ")"
+  | PairV(i, j) -> sprintf "(%s, %s)" (ppValue i) (ppValue j)
 
 let ppEnv fPP env =
   let ppEntry (s,v) acc = sprintf "  %s |-> %s \n" s (fPP v) + acc
@@ -136,7 +138,7 @@ let rec evalExpr (env : value env) (e : expr<typ>)
         (fun _ -> evalExpr env e2 cont econt) econt
   | Pair(e1,e2,_) ->
       evalExpr env e1
-        (fun v1 -> evalExpr env e2 (fun v2 -> cont (List [v1;v2])) econt) econt
+        (fun v1 -> evalExpr env e2 (fun v2 -> cont (PairV(v1,v2))) econt) econt
   | Let(valdecs,letBody) -> evalValdecs env valdecs letBody cont econt
   | If(e1, e2, e3) ->
       evalExpr env e1

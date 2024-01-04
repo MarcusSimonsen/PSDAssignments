@@ -5,7 +5,7 @@ fsharpc --standalone -r ~/bin/fsharp/FsLexYacc.Runtime.dll Absyn.fs FunPar.fs Fu
 
 #fsharpc --standalone -r:~/bin/fsharp/FsLexYacc.Runtime.dll Absyn.fs FunPar.fs FunLex.fs TypeInference.fs HigherFun.fs Machine.fs Comp.fs ParseTypeAndRun.fs MicroSMLC.fs -o microsmlc.exe
 
-gcc -Wall msmlmachinewgc.c -o msmlmachine
+gcc -Wall ./MsmlVM/src/msmlmachine.c -o msmlmachine
 
 mono microsmlc.exe -opt -eval ex01.sml
 ./msmlmachine ex01.out

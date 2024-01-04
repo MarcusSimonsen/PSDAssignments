@@ -181,6 +181,8 @@ let rec cExpr (kind: int->var) (varEnv : varEnv) (e : expr<typ>) (C: instr list)
        | ("hd",_)    -> CAR :: C  
        | ("tl",_)    ->  CDR :: C
        | ("isnil",_) -> NIL :: EQ :: C
+       | ("fst",_)   -> CAR :: C
+       | ("snd",_)   -> CDR :: C
        | _ -> failwith ("cExpr.Prim1 "+ope+" not implemented"))
   | Prim2(ope, e1, e2,_) ->
     cExpr kind varEnv e1
@@ -233,7 +235,7 @@ let rec cExpr (kind: int->var) (varEnv : varEnv) (e : expr<typ>) (C: instr list)
         (cExpr kind varEnv e2 C))
   | Pair(e1,e2,_) ->
     cExpr kind varEnv e1
-      (cExpr kind (incVarIdx varEnv 1) e2 (CONS :: C))
+      (cExpr kind (incVarIdx varEnv 1) e2 (PAIR :: C))
   | Let(valdecs,letBody) ->
     let ((_,fdepth') as bodyEnv,vdEnvs) =
       List.fold (fun (accEnv,accVdEnv) vd -> let (nextEnv,vdEnv) = genValdecEnv kind accEnv vd

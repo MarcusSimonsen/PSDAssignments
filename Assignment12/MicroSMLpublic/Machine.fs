@@ -44,12 +44,14 @@ type instr =
   | PRINTB                             (* print s[sp] as true/false       *)
   | PRINTC                             (* print s[sp] as character        *)
   | PRINTL                             (* print s[sp] as list             *)
+  | PRINTP                             (* print s[sp] as pair             *)
   | LDARGS                             (* load command line args on stack *)
   | STOP                               (* halt the abstract machine       *)
   | NIL                                (* load nil on stack               *)
   | CONS                               (* create cons cell and load ref.  *)
   | CAR                                (* get first field of cons cell    *)
   | CDR                                (* get second field of cons cell   *)
+  | PAIR                               (* get pair                        *)
   | SETCAR                             (* set first field of cons cell    *)
   | SETCDR                             (* set second field of cons cell   *)
   | PUSHLAB of label                   (* push label on stack             *)
@@ -128,6 +130,8 @@ let CODEPRINTL    = 39;
 let CODETHROW     = 40;
 let CODEPUSHHDLR  = 41;
 let CODEPOPHDLR   = 42;
+let CODEPAIR      = 43;
+let CODEPRINTP    = 44;
 
 (* Bytecode emission, first pass: build environment that maps 
    each label to an integer address in the bytecode.
@@ -163,7 +167,8 @@ let sizeInst instr =
   | PRINTI         -> 1
   | PRINTB         -> 1
   | PRINTC         -> 1
-  | PRINTL         -> 1    
+  | PRINTL         -> 1
+  | PRINTP         -> 1
   | LDARGS         -> 1
   | STOP           -> 1
   | NIL            -> 1
@@ -179,6 +184,7 @@ let sizeInst instr =
   | THROW          -> 1
   | PUSHHDLR _     -> 2
   | POPHDLR        -> 1
+  | PAIR           -> 2
 
 let makelabenv (addr, labenv) instr =
   let size = sizeInst instr      
@@ -218,6 +224,7 @@ let emitints getlab instr ints =
   | PRINTB         -> CODEPRINTB :: ints
   | PRINTC         -> CODEPRINTC :: ints
   | PRINTL         -> CODEPRINTL :: ints  
+  | PRINTP         -> CODEPRINTP :: ints
   | LDARGS         -> CODELDARGS :: ints
   | STOP           -> CODESTOP   :: ints
   | NIL            -> CODENIL    :: ints
@@ -233,6 +240,7 @@ let emitints getlab instr ints =
   | THROW          -> CODETHROW :: ints
   | PUSHHDLR lab   -> CODEPUSHHDLR :: getlab lab :: ints
   | POPHDLR        -> CODEPOPHDLR :: ints
+  | PAIR           -> CODEPAIR :: ints
 
 let ppInst (addr,strs) instr =
   let indent s = (addr + sizeInst instr,"  " + (addr.ToString().PadLeft(4)) + ": " + s :: strs)
@@ -266,6 +274,7 @@ let ppInst (addr,strs) instr =
   | PRINTB         -> indent "PRINTB"
   | PRINTC         -> indent "PRINTC"
   | PRINTL         -> indent "PRINTL"  
+  | PRINTP         -> indent "PRINTP"
   | LDARGS         -> indent "LDARGS"
   | STOP           -> indent "STOP"  
   | NIL            -> indent "NIL"   
@@ -281,6 +290,7 @@ let ppInst (addr,strs) instr =
   | THROW          -> indent "THROW"
   | PUSHHDLR lab   -> indent ("PUSHHDLR " + lab)
   | POPHDLR        -> indent "POPHDLR"
+  | PAIR           -> indent "PAIR"
 
 (* Convert instruction list to int list in two passes:
    Pass 1: build label environment

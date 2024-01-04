@@ -213,6 +213,8 @@ int silent=0; /* Glocal boolean value to run the interpreter in silent mode. Def
 #define THROW 40
 #define PUSHHDLR 41
 #define POPHDLR 42
+#define PAIR 43
+#define PRINTP 44
 
 // We check for stack overflow in execcode inbetween execution of two byte code instructions.
 // Such instructions can increate the stack arbitraily, e.g., INCSP. The STACKSAFETYSIZE
@@ -254,6 +256,8 @@ void printInstruction(word p[], word pc) {
   case PRINTB: printf("PRINTB"); break;
   case PRINTC: printf("PRINTC"); break;
   case PRINTL: printf("PRINTL"); break;    
+  case PRINTP: printf("PRINTP"); break;
+  case PAIR:   printf("PAIR"); break;
   case LDARGS: printf("LDARGS"); break;
   case STOP:   printf("STOP"); break;
   case NIL:    printf("NIL"); break;
@@ -355,6 +359,19 @@ void printL(word i) {
     printf("]");
   } 
   return;
+}
+
+void printP(word i) {
+  if (i == NILVALUE) {
+    printf("(,)");
+  } else {
+    word *consPtr = (word *)i;
+    if (!(BlockTag(*consPtr) == CONSTAG)) {
+      printf("PRINTP: Expected CONSTAG.\n");
+      exit(-1);
+    }
+    printf("(" WORD_FMT ", " WORD_FMT ")", consPtr[1], consPtr[2]);
+  }
 }
 
 // Garbage collection and heap allocation 
