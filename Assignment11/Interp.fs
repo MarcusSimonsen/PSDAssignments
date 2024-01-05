@@ -133,6 +133,8 @@ let rec exec stmt (locEnv : locEnv) (gloEnv : gloEnv) (store : store) : store =
               if v<>0 then loop (exec body locEnv gloEnv store2)
                       else store2
       loop store
+    | Forloop(e1, e2, e3, body) ->
+        exec (Block [Expr e1 |> Stmt; While(e2, Block[Stmt body; Expr e3 |> Stmt]) |> Stmt]) locEnv gloEnv store
     | Expr e -> 
       let (_, store1) = eval e locEnv gloEnv store 
       store1 
@@ -193,7 +195,15 @@ and eval e locEnv gloEnv store : int * store =
     | Orelse(e1, e2) -> 
       let (i1, store1) as res = eval e1 locEnv gloEnv store
       if i1<>0 then res else eval e2 locEnv gloEnv store1
-    | Call(f, es) -> callfun f es locEnv gloEnv store 
+    | Call(f, es) -> callfun f es locEnv gloEnv store
+    | PreInc acc ->
+        let addr = access acc locEnv gloEnv store |> fst
+        let value = (getSto store addr) + 1
+        (value, setSto store addr value)
+    | PreDec acc ->
+        let addr = access acc locEnv gloEnv store |> fst
+        let value = (getSto store addr) - 1
+        (value, setSto store addr value)
 
 and access acc locEnv gloEnv store : int * store = 
     match acc with 

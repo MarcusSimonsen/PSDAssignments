@@ -1,0 +1,27 @@
+7.1:
+
+It works as expected
+See tree.jpg
+
+7.2:
+
+See 7-2-i.c
+See 7-2-ii.c
+See 7-2-iii.c
+
+7.3
+
+See Absyn.fs
+See CLex.fsl
+See CPar.fsy
+
+See 7-3-i-forloop.c
+See 7-3-ii-forloop.c
+See 7-3-iii-forloop.c
+
+7.4 and 7.5
+
+See Absyn.fs
+See CLex.fsl
+See CPar.fsy
+See Interp.fs

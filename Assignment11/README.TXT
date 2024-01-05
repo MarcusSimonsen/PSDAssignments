@@ -44,8 +44,12 @@ C. To compile and use the backwards (continuation-based) micro-C compiler:
    fsyacc --module CPar CPar.fsy
    fsharpi -r ~/fsharp/FsLexYacc.Runtime.dll Absyn.fs CPar.fs CLex.fs Parse.fs Machine.fs Contcomp.fs ParseAndContcomp.fs   
 
+   this instead:
+   dotnet build
+   dotnet fsi -r ../../fsharp/FsLexYacc.Runtime.dll Absyn.fs CPar.fs CLex.fs Parse.fs Machine.fs Contcomp.fs ParseAndContcomp.fs
+
    open ParseAndContcomp;;
-   contCompileToFile (fromFile "ex11.c") "ex11.out";;
+   contCompileToFile (fromFile "test.c") "test.out";;
    compile "ex11";;
    #q;;
 

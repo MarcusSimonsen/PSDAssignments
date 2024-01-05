@@ -1,0 +1,37 @@
+8.1.2 
+
+ex3.out
+LDARGS; CALL (1, "L1"); STOP; 
+L1: INCSP 1; GETBP; CSTI 1; ADD; CSTI 0; STI; INCSP -1; GOTO "L3";  ------ i=0;
+L2: GETBP; CSTI 1; ADD; LDI; PRINTI; INCSP -1; GETBP; CSTI 1; ADD; GETBP; CSTI 1; ADD; LDI; CSTI 1; ADD; STI; INCSP -1; INCSP 0; ----- print i; i=i+1;
+L3: GETBP; CSTI 1; ADD; LDI; GETBP; CSTI 0; ADD; LDI; LT; IFNZRO "L2"; INCSP -1; RET 0] ----- while(i < n)
+
+ex5.out
+LDARGS; CALL (1, "L1"); STOP; 
+L1: INCSP 1; GETBP; CSTI 1; ADD; GETBP; CSTI 0; ADD; LDI; STI; INCSP -1; INCSP 1; GETBP; CSTI 0; ADD; LDI; GETBP; CSTI 2; ADD; CALL (2, "L2"); INCSP -1; GETBP; CSTI 2; ADD; LDI; PRINTI; INCSP -1; INCSP -1; GETBP; CSTI 1; ADD; LDI; PRINTI; INCSP -1; INCSP -1; RET 0; ----- void main(int n)
+L2: GETBP; CSTI 1; ADD; LDI; GETBP; CSTI 0; ADD; LDI; GETBP; CSTI 0; ADD; LDI; MUL; STI; INCSP -1; INCSP 0; RET 1] ----- void square(int i, int *rp)
+
+the nested scope is visible in this part of the byte code: GETBP; CSTI 2; ADD; LDI; PRINTI; INCSP -1; INCSP -1; GETBP; CSTI 1; ADD; LDI; PRINTI;
+In the first print operation we can see that the basepointer is incremented by two and we therefor access the r variable that is inside the scope. Later when we print the variable outside of the scope, the basepointer is only incremented by 1 since this is where the variable is declared.
+
+for the stack trace of "ex3.out" see the file "ex3trace.txt"
+
+8.3
+
+See Comp.fs
+
+8.4
+
+There are a lot of labels that are either the same (L4, L5...) or essentially no-ops. We are probably spending a lot of time jumping between labels rather than computing.
+
+8.5
+
+See Absyn.fs, CLex.fsl, CPar.fsy, Comp.fs
+
+We just use Andalso and Orelse for the ternary operator.
+
+8.6
+
+See Comp.fs, CLex.fsl, Cpar.fsy, Absyn.fs
+
+Our switch compiles the expression and tests the value against each case by subtracting it from the int constant. If it's not zero, we jump the next case. If multiple cases have the same value, they will both be executed.
